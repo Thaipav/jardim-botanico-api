@@ -1,7 +1,6 @@
 from SQL import engine, Base
-import tabelas 
+import tabelas  
 
-print("Criando o banco de dados e as tabelas...")
-
+print("Criando tabelas no banco de dados...")
 Base.metadata.create_all(bind=engine)
-print("Sucesso! O arquivo 'jardim.db' foi gerado.")
+print("Banco de dados pronto!")
