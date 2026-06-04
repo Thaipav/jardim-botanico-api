@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date
-from SQL import Base 
+from Modelo.SQL import Base 
 
 class Especie(Base):
     __tablename__ = "especies"
@@ -8,7 +8,8 @@ class Especie(Base):
     frequencia_rega = Column(Integer)
     luminosidade = Column(String(255))         
     categoria = Column(String(255))           
-    origem = Column(String(255))              
+    origem = Column(String(255))
+    tipo_solo = Column(String(255)) 
 
     def __init__(self, nome, freq, luz, solo=None, cat=None, orig=None):
         self.nome = nome
@@ -26,22 +27,25 @@ class PlantaIndividual(Base):
     status_saude = Column(String(255))        
     setor_jardim = Column(String(255))       
     altura_cm = Column(Float)
+    data_ultimo_cuidado = Column(Date, nullable=True)
 
-    def __init__(self, id_especie, setor, status="Saudável"):
+    def __init__(self, id_especie, setor, status="Saudável", data_plantio=None, data_ultimo_cuidado=None):
         self.id_especie = id_especie
         self.setor_jardim = setor
         self.status_saude = status
+        self.data_plantio = data_plantio
+        self.data_ultimo_cuidado = data_ultimo_cuidado
 
 class Funcionario(Base):
     __tablename__ = "funcionarios"
     id_funcionario = Column(Integer, primary_key=True, index=True)
     nome = Column(String(255), nullable=False) 
-    cargo = Column(String(255))                
+    setor = Column(String(255))                
     turno = Column(String(255))                
     
-    def __init__(self, nome, cargo, turno): 
+    def __init__(self, nome, setor, turno): 
         self.nome = nome
-        self.cargo = cargo
+        self.setor = setor
         self.turno = turno
 
 class HistoricoCuidado(Base):
