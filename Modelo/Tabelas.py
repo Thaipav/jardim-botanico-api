@@ -1,23 +1,24 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date
-from Modelo.SQL import Base 
+from Modelo.SQL import Base
+from datetime import date
 
 class Especie(Base):
     __tablename__ = "especies"
     id_especie = Column(Integer, primary_key=True, index=True)
     nome = Column(String(255), nullable=False) 
     frequencia_rega = Column(Integer)
-    luminosidade = Column(String(255))         
-    categoria = Column(String(255))           
+    luminosidade = Column(String(255))          
+    categoria = Column(String(255))            
     origem = Column(String(255))
     tipo_solo = Column(String(255)) 
 
-    def __init__(self, nome, freq, luz, solo=None, cat=None, orig=None):
+    def __init__(self, nome, frequencia_rega, luminosidade, categoria, origem, tipo_solo="Geral"):
         self.nome = nome
-        self.frequencia_rega = freq
-        self.luminosidade = luz
-        self.tipo_solo = solo
-        self.categoria = cat
-        self.origem = orig
+        self.frequencia_rega = frequencia_rega
+        self.luminosidade = luminosidade
+        self.categoria = categoria
+        self.origem = origem
+        self.tipo_solo = tipo_solo
 
 class PlantaIndividual(Base):
     __tablename__ = "plantas_individuais"
@@ -29,42 +30,30 @@ class PlantaIndividual(Base):
     altura_cm = Column(Float)
     data_ultimo_cuidado = Column(Date, nullable=True)
 
-    def __init__(self, id_especie, setor, status="Saudável", data_plantio=None, data_ultimo_cuidado=None):
+    def __init__(self, id_especie, setor_jardim, status_saude="Saudável", altura_cm=0.0, data_plantio=None):
         self.id_especie = id_especie
-        self.setor_jardim = setor
-        self.status_saude = status
-        self.data_plantio = data_plantio
-        self.data_ultimo_cuidado = data_ultimo_cuidado
+        self.setor_jardim = setor_jardim
+        self.status_saude = status_saude
+        self.altura_cm = altura_cm
+        self.data_plantio = data_plantio if data_plantio else date.today()
+        self.data_ultimo_cuidado = date.today()
 
 class Funcionario(Base):
     __tablename__ = "funcionarios"
     id_funcionario = Column(Integer, primary_key=True, index=True)
     nome = Column(String(255), nullable=False) 
-    setor = Column(String(255))                
-    turno = Column(String(255))                
+    setor = Column(String(255))                 
+    turno = Column(String(255))                 
     
     def __init__(self, nome, setor, turno): 
         self.nome = nome
         self.setor = setor
         self.turno = turno
 
-class HistoricoCuidado(Base):
-    __tablename__ = "historico_cuidados"
-    id_cuidado = Column(Integer, primary_key=True, index=True)
-    id_planta = Column(Integer, ForeignKey("plantas_individuais.id_planta"))
-    data_cuidado = Column(Date)
-    tipo_cuidado = Column(String(255))        
-    funcionario_responsavel = Column(Integer, ForeignKey("funcionarios.id_funcionario"))
-
-    def __init__(self, id_planta, tipo_cuidado, funcionario_responsavel):
-        self.id_planta = id_planta
-        self.tipo_cuidado = tipo_cuidado
-        self.funcionario_responsavel = funcionario_responsavel
-
-class SensorAmbiente(Base): 
+class SensorAmbiente(Base):
     __tablename__ = "sensores_ambiente"
-    id_sensor = Column(Integer, primary_key=True, index=True) 
-    setor = Column(String(255))               
+    id_sensor = Column(Integer, primary_key=True, index=True)
+    setor = Column(String(255))
     temperatura = Column(Float)
     umidade = Column(Float)
     data_leitura = Column(Date)
@@ -73,4 +62,4 @@ class SensorAmbiente(Base):
         self.setor = setor
         self.temperatura = temperatura
         self.umidade = umidade
-        self.data_leitura = data_leitura
+        self.data_leitura = data_leitura if data_leitura else date.today()

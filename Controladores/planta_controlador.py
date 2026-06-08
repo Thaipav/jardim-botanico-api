@@ -5,40 +5,78 @@ from datetime import date
 
 class PlantaControlador(Base):
 
-    def cadastrar(self, id_especie: int, setor: str, status: str = "Saudável"):
-        # Requisito 5: Alertar se estiver 'Doente'
-        if status.lower() == "doente":
-            print(f"ALERTA: A planta do setor {setor} esta doente!")
+    def cadastrar(self, id_especie: int, setor_jardim: str, status_saude: str = "Saudável", altura_cm: float = 0.0, data_plantio: date = None):
+        # REQUISITO 5: Lógica de Alerta
+        alerta_usuario = None
+        if status_saude.lower() == "doente":
+            alerta_usuario = f"ATENÇÃO: A planta do setor {setor_jardim} foi registrada como DOENTE!"
+            print(alerta_usuario) 
 
-        nova_planta = PlantaIndividual(id_especie=id_especie, setor=setor, status=status)
+        nova_planta = PlantaIndividual(
+            id_especie=id_especie, 
+            setor_jardim=setor_jardim, 
+            status_saude=status_saude,
+            altura_cm=altura_cm,
+            data_plantio=data_plantio if data_plantio else date.today()
+        )
+        
+        # REQUISITO 6: Armazenar data do último cuidado
+        nova_planta.data_ultimo_cuidado = date.today() 
+
         self._db.add(nova_planta)
         self._db.commit()
         self._db.refresh(nova_planta)
-        return nova_planta
+        
+        return {
+            "mensagem": "Planta cadastrada com sucesso!",
+            "alerta": alerta_usuario, 
+            "dados_da_planta": nova_planta
+        }
     
-    def listar_por_setor(self, setor: str):
-        # Requisito 6: Listar plantas por setor
-        plantas = self._db.query(PlantaIndividual).filter(PlantaIndividual.setor_jardim == setor).all()
-        return [p for p in plantas]
+    def listar_por_setor(self, setor_jardim: str):
+        # REQUISITO 7: Listar plantas por setor com formatação de data
+        plantas = self._db.query(PlantaIndividual).filter(PlantaIndividual.setor_jardim == setor_jardim).all()
+       
+        return [{
+            "id_planta": p.id_planta,
+            "id_especie": p.id_especie,
+            "setor": p.setor_jardim,
+            "status": p.status_saude,
+            "altura": p.altura_cm if p.altura_cm else 0.0,
+            "data_plantio": p.data_plantio.strftime('%d/%m/%Y') if p.data_plantio else "Sem data",
+            "ultimo_cuidado": p.data_ultimo_cuidado.strftime('%d/%m/%Y') if p.data_ultimo_cuidado else "Sem registro"
+        } for p in plantas]
     
     def editar_status(self, id_planta: int, novo_status: str):
-        # Requisito 7: Edição de dados
+        # REQUISITO 8: Edição de dados
         planta = self._db.query(PlantaIndividual).filter(PlantaIndividual.id_planta == id_planta).first()
+        
         if not planta:
             raise HTTPException(status_code=404, detail="Planta não encontrada para editar.")
         
         planta.status_saude = novo_status
-        planta.data_ultimo_cuidado = date.today() #Requisito 8:  armazenar data do último cuidado.
+        planta.data_ultimo_cuidado = date.today() 
+        
         self._db.commit()
-        return planta
+        self._db.refresh(planta)
+
+        alerta = None
+        if novo_status.lower() == "doente":
+            alerta = f"ALERTA: Status alterado! Planta do setor {planta.setor_jardim} está DOENTE!"
+
+        return {
+            "mensagem": "Status atualizado com sucesso!",
+            "alerta": alerta,
+            "planta": planta
+        }
     
     def excluir(self, id_planta: int):
         planta = self._db.query(PlantaIndividual).filter(PlantaIndividual.id_planta == id_planta).first()
+        
         if not planta:
             raise HTTPException(status_code=404, detail="Planta não encontrada para exclusão.")
         
         self._db.delete(planta)
         self._db.commit()
+        
         return {"detail": f"Planta {id_planta} removida com sucesso."}
-
-    

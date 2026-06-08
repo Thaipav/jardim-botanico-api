@@ -1,10 +1,11 @@
 from fastapi import HTTPException
 from Controladores.base import Base 
 from Modelo.Tabelas import SensorAmbiente
+from datetime import date
 
 class SensorControlador(Base):
 
-    def cadastrar_leitura(self, setor: str, temperatura: float, umidade: float, data_leitura: int):
+    def cadastrar_leitura(self, setor: str, temperatura: float, umidade: float, data_leitura: date = None):
         
         # 9. VALIDAÇÃO: Verifica se a umidade é positiva
         if umidade < 0:
@@ -15,15 +16,15 @@ class SensorControlador(Base):
 
         # 10. LÓGICA DE NEGÓCIO: Verifica se o clima é bom para cactos
         if temperatura > 25 and umidade < 30:
-            diagnostico = "SIM! O ambiente está perfeito para cactos (quente e seco)."
+            diagnostico = "O ambiente está perfeito para cactos (quente e seco)."
         else:
-            diagnostico = "NÃO. O ambiente não está ideal para cactos no momento."
+            diagnostico = "O ambiente não está ideal para cactos no momento, coloque o sensor em um local mais apropriado, ou insira a planta aduqada a esse ambiente."
 
         nova_leitura = SensorAmbiente(
             setor=setor, 
             temperatura=temperatura, 
             umidade=umidade, 
-            data_leitura=data_leitura
+            data_leitura=data_leitura if data_leitura else date.today()
         )
         
         self._db.add(nova_leitura)
@@ -51,7 +52,7 @@ class SensorControlador(Base):
             })
         return lista_final
     
-    def editar(self, id_sensor: int, novo_setor: str, nova_temp: float, nova_umid: float, nova_data: int):
+    def editar(self, id_sensor: int, novo_setor: str, nova_temp: float, nova_umid: float, nova_data: date = None):
 
         sensor = self._db.query(SensorAmbiente).filter(SensorAmbiente.id_sensor == id_sensor).first()
         
@@ -67,7 +68,7 @@ class SensorControlador(Base):
         sensor.setor = novo_setor
         sensor.temperatura = nova_temp
         sensor.umidade = nova_umid
-        sensor.data_leitura = nova_data
+        sensor.data_leitura = nova_data if nova_data else date.today()
         
         self._db.commit()
         self._db.refresh(sensor)

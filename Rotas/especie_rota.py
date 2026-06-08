@@ -13,16 +13,16 @@ def get_db():
         db.close()
 
 @router.post("/")
-def cadastrar(nome: str, freq: int, luz: str, cat: str, orig: str, db: Session = Depends(get_db)):
-    return EspecieControlador(db).cadastrar(nome, freq, luz, cat, orig)
+def cadastrar(nome: str, frequencia_rega: int, luminosidade: str, categoria: str, origem: str, db: Session = Depends(get_db)):
+    return EspecieControlador(db).cadastrar(nome, frequencia_rega, luminosidade, categoria, origem)
 
 @router.get("/")
 def listar(db: Session = Depends(get_db)):
-    return EspecieControlador(db).listar_todas()
+    return EspecieControlador(db).listar_tudo()
 
 @router.put("/{id}")
-def editar(id: int, nome: str, luz: str, db: Session = Depends(get_db)):
-    return EspecieControlador(db).editar(id, nome, luz)
+def editar(id: int, nome: str, freq: int, db: Session = Depends(get_db)): 
+    return EspecieControlador(db).editar(id, nome, freq)
 
 @router.delete("/{id}")
 def excluir(id: int, db: Session = Depends(get_db)):
