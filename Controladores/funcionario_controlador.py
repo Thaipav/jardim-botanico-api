@@ -5,7 +5,7 @@ from Modelo.Tabelas import Funcionario
 class FuncionarioControlador(Base):
 
     def cadastrar(self, nome: str, setor: str, turno: str):
-        # Requisito 9: Cadastro de funcionários
+        # Requisito 4: Cadastro de funcionários
         if not nome: 
             raise HTTPException(status_code=400, detail= "O nome precisa ser informado para cadastrar um funcionário.")
         

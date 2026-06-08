@@ -19,3 +19,11 @@ def cadastrar(nome: str, setor: str, turno: str, db: Session = Depends(get_db)):
 @router.get("/")
 def listar(db: Session = Depends(get_db)):
     return FuncionarioControlador(db).listar_todos()
+
+@router.put("/{id}")
+def editar(id: int, setor: str, turno: str, db: Session = Depends(get_db)):
+    return FuncionarioControlador(db).editar(id, setor, turno)
+
+@router.delete("/{id}")
+def excluir(id: int, db: Session = Depends(get_db)):
+    return FuncionarioControlador(db).excluir(id)

@@ -23,3 +23,7 @@ def buscar_setor(setor: str, db: Session = Depends(get_db)):
 @router.put("/{id}/status")
 def editar_status(id: int, novo_status: str, db: Session = Depends(get_db)):
     return PlantaControlador(db).editar_status(id, novo_status)
+
+@router.delete("/{id}")
+def excluir(id: int, db: Session = Depends(get_db)):
+    return PlantaControlador(db).excluir(id)

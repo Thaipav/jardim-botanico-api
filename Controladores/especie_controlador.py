@@ -11,7 +11,7 @@ class EspecieControlador(Base):
         # Requisito 2: Frequência de rega não pode ser negativa
         if freq < 0:
             raise HTTPException(status_code=400, detail="A rega não pode ser negativa!")
-        # Requisito 11: Rega excessiva em cactos
+        # Requisito 3: Rega excessiva em cactos
         if "Cacto" in nome and freq > 1:
             raise HTTPException(status_code=400, detail="Cactos devem ser regados no máximo uma vez por semana.")
         
