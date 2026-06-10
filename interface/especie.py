@@ -2,11 +2,9 @@ import tkinter as tk
 from tkinter import messagebox
 import requests
 
-# URL base que vai bater direto no prefixo do seu router do FastAPI
 URL_API = "http://127.0.0.1:8000/especies"
 
 def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
-    # Limpa o frame de formulários antes de desenhar a nova ação
     for widget in frame.winfo_children():
         widget.destroy()
 
@@ -16,11 +14,7 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
     )
     lbl_subtitulo.pack(pady=15)
 
-    # ==========================================
-    # LÓGICA DE CADASTRO
-    # ==========================================
     if acao == "Cadastrar":
-        # Baseado exatamente nos parâmetros da sua rota @router.post("/")
         labels = ["Nome:", "Frequência de Rega (dias):", "Luminosidade:", "Categoria:", "Origem:"]
         entradas = {}
         
@@ -35,7 +29,6 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
             nome = entradas["Nome:"].get()
             rega = entradas["Frequência de Rega (dias):"].get()
             
-            # Validações locais (Regras de negócio do Controlador)
             if not nome:
                 messagebox.showerror("Erro", "O nome da espécie é obrigatório.")
                 return
@@ -52,8 +45,6 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
                 messagebox.showerror("Erro", "Cactos devem ser regados no máximo uma vez por semana.")
                 return
             
-            # Como suas rotas recebem os dados como parâmetros comuns (Query Parameters)
-            # passamos os dados no 'params' do requests em vez de 'json'.
             parametros = {
                 "nome": nome, 
                 "frequencia_rega": rega_int,
@@ -75,9 +66,6 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
         btn_salvar = tk.Button(frame, text="Salvar", command=disparar_cadastro, **estilo_botao)
         btn_salvar.pack(pady=15)
 
-    # ==========================================
-    # LÓGICA DE LISTAGEM
-    # ==========================================
     elif acao == "Listar":
         txt_lista = tk.Text(frame, font=("Times New Roman", 11), width=42, height=12)
         txt_lista.pack(pady=10)
@@ -89,16 +77,12 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
                 if not especies:
                     txt_lista.insert(tk.END, "Nenhuma espécie cadastrada ainda.")
                 for esp in especies:
-                    # Exibe os dados baseados no dicionário que o seu listar_tudo() retorna
                     txt_lista.insert(tk.END, f"ID: {esp['id']} | Nome: {esp['nome']}\nRega: {esp['rega']} | Solo: {esp['solo']}\n{'-'*40}\n")
             else:
                 txt_lista.insert(tk.END, "Erro ao buscar a lista na API.")
         except requests.exceptions.ConnectionError:
             txt_lista.insert(tk.END, "Uvicorn desligado.\nExemplo simulado:\nID: 1 | Nome: Cacto Bola\nRega: 1 | Solo: solo humífero")
 
-    # ==========================================
-    # LÓGICA DE EDIÇÃO
-    # ==========================================
     elif acao == "Editar":
         tk.Label(frame, text="ID da Espécie que deseja Editar:", font=("Times New Roman", 11), bg=cor_fundo, fg="white").pack()
         ent_id = tk.Entry(frame, font=("Times New Roman", 11), width=10)
@@ -125,7 +109,6 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
                 messagebox.showerror("Erro", "Cactos devem ser regados no máximo uma vez por semana.")
                 return
             
-            # Baseado na sua rota @router.put("/{id}") que pede 'nome' e 'freq'
             parametros = {"nome": nome, "freq": int(rega)}
             
             try:
@@ -141,9 +124,6 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
         btn_editar = tk.Button(frame, text="Atualizar", command=disparar_edicao, **estilo_botao)
         btn_editar.pack(pady=15)
 
-    # ==========================================
-    # LÓGICA DE EXCLUSÃO
-    # ==========================================
     elif acao == "Excluir":
         tk.Label(frame, text="ID da Espécie para Excluir:", font=("Times New Roman", 11), bg=cor_fundo, fg="white").pack(pady=5)
         ent_id = tk.Entry(frame, font=("Times New Roman", 11), width=10)
@@ -156,7 +136,6 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
                 return
                 
             try:
-                # Bate na sua rota @router.delete("/{id}")
                 resposta = requests.delete(f"{URL_API}/{id_alvo}")
                 if resposta.status_code == 200:
                     messagebox.showinfo("Sucesso", "Espécie excluída do sistema!")
@@ -169,7 +148,6 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
         btn_deletar = tk.Button(frame, text="Excluir de Vez", command=disparar_exclusao, **estilo_botao)
         btn_deletar.pack(pady=15)
 
-    # Botão para cancelar a operação atual
     btn_cancelar = tk.Button(
         frame, text="← Cancelar", command=voltar,
         font=("Times New Roman", 10, "bold"), bg=cor_fundo, fg="white", relief="flat",

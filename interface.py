@@ -72,11 +72,9 @@ def executar_acao(nome_acao):
     elif categoria_atual == "Sensor":
         desenhar_formulario_sensor(frame_formulario, nome_acao, lambda: abrir_menu_acoes("Sensor"), estilo_botao_menu, MARROM_PASTEL_ESCURO)
 
-# --- MONTAGEM DOS CONTEÚDOS ---
 frame_inicial = criar_tela_inicio(janela, abrir_menu_opcoes, estilo_botao_menu, MARROM_PASTEL_ESCURO)
 frame_opcoes = criar_menu_opcoes(janela, abrir_menu_acoes, abrir_tela_inicial, estilo_botao_menu, MARROM_PASTEL_ESCURO)
 frame_acoes = criar_menu_acoes(janela, executar_acao, abrir_menu_opcoes, estilo_botao_menu, MARROM_PASTEL_ESCURO)
 
-# Inicializa o app
 abrir_tela_inicial()
 janela.mainloop()
