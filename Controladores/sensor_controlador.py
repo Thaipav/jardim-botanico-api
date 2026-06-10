@@ -7,14 +7,14 @@ class SensorControlador(Base):
 
     def cadastrar_leitura(self, setor: str, temperatura: float, umidade: float, data_leitura: date = None):
         
-        # 9. VALIDAÇÃO: Verifica se a umidade é positiva
+        # Requisito 9: VALIDAÇÃO: Verifica se a umidade é positiva
         if umidade < 0:
             raise HTTPException(
                 status_code=400, 
                 detail="A umidade deve apresentar apenas valores positivos."
             )
 
-        # 10. LÓGICA DE NEGÓCIO: Verifica se o clima é bom para cactos
+        # Requisito 10: Verifica se o clima é bom para cactos
         if temperatura > 25 and umidade < 30:
             diagnostico = "O ambiente está perfeito para cactos (quente e seco)."
         else:
@@ -35,7 +35,13 @@ class SensorControlador(Base):
             "id_sensor": nova_leitura.id_sensor,
             "setor": nova_leitura.setor,
             "diagnostico_cacto": diagnostico,
-            "dados": nova_leitura
+            "dados": {
+                "id": nova_leitura.id_sensor,
+                "setor": nova_leitura.setor,
+                "temp": nova_leitura.temperatura,
+                "umid": nova_leitura.umidade,
+                "data": nova_leitura.data_leitura.strftime('%d/%m/%Y') if nova_leitura.data_leitura else "Sem data"
+            }
         }
 
     def listar_leituras(self):
@@ -48,7 +54,7 @@ class SensorControlador(Base):
                 "setor": s.setor,
                 "temp": s.temperatura,
                 "umid": s.umidade,
-                "data": s.data_leitura
+                "data": s.data_leitura.strftime('%d/%m/%Y') if s.data_leitura else "Sem data"
             })
         return lista_final
     
@@ -72,7 +78,17 @@ class SensorControlador(Base):
         
         self._db.commit()
         self._db.refresh(sensor)
-        return sensor
+        
+        return {
+            "mensagem": "Leitura do sensor atualizada com sucesso!",
+            "dados": {
+                "id": sensor.id_sensor,
+                "setor": sensor.setor,
+                "temp": sensor.temperatura,
+                "umid": sensor.umidade,
+                "data": sensor.data_leitura.strftime('%d/%m/%Y') if sensor.data_leitura else "Sem data"
+            }
+        }
 
     def excluir(self, id_sensor: int):
         leitura = self._db.query(SensorAmbiente).filter(SensorAmbiente.id_sensor == id_sensor).first()

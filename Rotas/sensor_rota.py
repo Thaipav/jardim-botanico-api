@@ -26,5 +26,5 @@ def editar_leitura(id: int, setor: str, temperatura: float, umidade: float, data
     return SensorControlador(db).editar(id, setor, temperatura, umidade, data_leitura)
 
 @router.delete("/{id}")
-def deletar_leitura(id: int, db: Session = Depends(get_db)):
+def excluir_leitura(id: int, db: Session = Depends(get_db)):
     return SensorControlador(db).excluir(id)
