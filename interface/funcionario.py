@@ -62,15 +62,33 @@ def desenhar_formulario_funcionario(frame, acao, voltar, estilo_botao, cor_fundo
         ent_turno = tk.Entry(frame, font=("Times New Roman", 11), width=25); ent_turno.pack(pady=2)
 
         def disparar_edicao():
-            if not ent_id.get(): return
-            parametros = {"novo_setor": ent_setor.get(), "novo_turno": ent_turno.get()}
+            id_func = ent_id.get()
+            if not id_func:
+                messagebox.showwarning("Aviso", "Por favor, informe o ID do funcionário.")
+                return
+            parametros = {
+                "setor": ent_setor.get(), 
+                "turno": ent_turno.get()
+            }
+            
             try:
-                resposta = requests.put(f"{URL_API}/{ent_id.get()}", params=parametros)
+                resposta = requests.put(f"{URL_API}/{id_func}", params=parametros)
+                
                 if resposta.status_code == 200:
-                    messagebox.showinfo("Sucesso", "Funcionário atualizado!")
+                    messagebox.showinfo("Sucesso", "Funcionário atualizado com sucesso!")
                     voltar()
-            except:
-                messagebox.showwarning("Modo Offline", "Comando enviado!")
+                elif resposta.status_code == 404:
+                    messagebox.showerror("Erro 404", "Funcionário não encontrado no banco de dados.")
+                else:
+                    try:
+                        detalhe = resposta.json().get("detail", "Erro desconhecido.")
+                    except:
+                        detalhe = resposta.text
+                    messagebox.showerror("Erro na API", f"Falha (Status {resposta.status_code}): {detalhe}")
+                    
+            except requests.exceptions.ConnectionError:
+                messagebox.showwarning("Modo Offline", "Servidor offline! Alteração simulada localmente.")
+                voltar()
 
         tk.Button(frame, text="Atualizar", command=disparar_edicao, **estilo_botao).pack(pady=15)
 

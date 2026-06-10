@@ -5,14 +5,13 @@ from Modelo.Tabelas import Especie
 class EspecieControlador(Base):
 
     def cadastrar(self, nome: str, frequencia_rega: int, luminosidade: str, categoria: str, origem: str, tipo_solo: str = "solo humífero "):
-        # Requisito 1: Não permite sem nome
         if not nome:
             raise HTTPException(status_code=400, detail="O nome da espécie é obrigatório.")
-        # Requisito 2: Frequência de rega não pode ser negativa
+        # Requisito 1: Frequência de rega não pode ser negativa
         if frequencia_rega < 0:
             raise HTTPException(status_code=400, detail="A rega não pode ser negativa!")
         
-        # Requisito 3: Rega excessiva em cactos não é permitida
+        # Requisito 2: Rega excessiva em cactos não é permitida
         if "cacto" in nome.lower() and frequencia_rega > 1:
             raise HTTPException(status_code=400, detail="Cactos devem ser regados no máximo uma vez por semana.")
         

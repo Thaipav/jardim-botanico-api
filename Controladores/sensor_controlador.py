@@ -7,7 +7,7 @@ class SensorControlador(Base):
 
     def cadastrar_leitura(self, setor: str, temperatura: float, umidade: float, data_leitura: date = None):
         
-        # Requisito 9: VALIDAÇÃO: Verifica se a umidade é positiva
+        # Requisito 9: Verifica se a umidade é positiva
         if umidade < 0:
             raise HTTPException(
                 status_code=400, 

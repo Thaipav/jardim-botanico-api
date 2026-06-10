@@ -6,7 +6,7 @@ from datetime import date
 class PlantaControlador(Base):
 
     def cadastrar(self, id_especie: int, setor_jardim: str, status_saude: str = "Saudável", altura_cm: float = 0.0, data_plantio: date = None):
-        # Requisito 5: Se a planta receber status "Doente", gera alerta para o usuário
+        # Requisito 4: Se a planta receber status "Doente", gera alerta para o usuário
         alerta_usuario = None
         if status_saude.lower() == "doente":
             alerta_usuario = f"ATENÇÃO: A planta do setor {setor_jardim} foi registrada como DOENTE!"
@@ -20,7 +20,7 @@ class PlantaControlador(Base):
             data_plantio=data_plantio if data_plantio else date.today()
         )
         
-        # Requisito 6: Armazena a data do último cuidado
+        # Requisito 5: Armazena a data do último cuidado
         nova_planta.data_ultimo_cuidado = date.today() 
 
         self._db.add(nova_planta)
@@ -42,7 +42,7 @@ class PlantaControlador(Base):
         }
     
     def listar_por_setor(self, setor_jardim: str):
-        # Requisito 7: Listar plantas por setor do jardim
+        # Requisito 6: Listar plantas por setor do jardim
         plantas = self._db.query(PlantaIndividual).filter(PlantaIndividual.setor_jardim == setor_jardim).all()
        
         return [{
@@ -56,13 +56,14 @@ class PlantaControlador(Base):
         } for p in plantas]
     
     def editar_status(self, id_planta: int, novo_status: str):
-        # Requisito 8: Permite a edição do status de saúde da planta, atualizando a data do último cuidado
+        # Requisito 7: Permite a edição do status de saúde da planta.
         planta = self._db.query(PlantaIndividual).filter(PlantaIndividual.id_planta == id_planta).first()
         
         if not planta:
             raise HTTPException(status_code=404, detail="Planta não encontrada para editar.")
         
         planta.status_saude = novo_status
+        # Requisito 8: atualiza a data do último cuidado
         planta.data_ultimo_cuidado = date.today() 
         
         self._db.commit()

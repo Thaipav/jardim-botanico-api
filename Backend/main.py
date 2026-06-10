@@ -1,5 +1,9 @@
 from fastapi import FastAPI
 from Rotas import especie_rota, funcionario_rota, plantas_rota, sensor_rota
+from Modelo.Tabelas import Base  
+from Backend.BancoDeDados import engine  
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Jardim API")
 
