@@ -1,6 +1,6 @@
 from fastapi import HTTPException
-from Controladores.base import Base 
-from Modelo.Tabelas import SensorAmbiente
+from controladores.base import Base 
+from modelo.Tabelas import SensorAmbiente
 from datetime import date
 
 class SensorControlador(Base):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from Modelo.SQL import SessionLocal 
-from Controladores.planta_controlador import PlantaControlador
+from modelo.SQL import SessionLocal 
+from controladores.planta_controlador import PlantaControlador
 from datetime import date 
 
 router = APIRouter(prefix="/plantas", tags=["Plantas Individuais"])

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from Modelo.SQL import SessionLocal
-from Controladores.sensor_controlador import SensorControlador
+from modelo.SQL import SessionLocal
+from controladores.sensor_controlador import SensorControlador
 from datetime import date
 
 router = APIRouter(prefix="/sensores", tags=["Sensores"])

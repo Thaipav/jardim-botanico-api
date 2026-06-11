@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from Modelo.SQL import SessionLocal 
-from Controladores.especie_controlador import EspecieControlador
+from modelo.SQL import SessionLocal 
+from controladores.especie_controlador import EspecieControlador
 
 router = APIRouter(prefix="/especies", tags=["Espécies"])
 

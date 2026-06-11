@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date
-from Modelo.SQL import Base
+from modelo.SQL import Base
 from datetime import date
 
 class Especie(Base):

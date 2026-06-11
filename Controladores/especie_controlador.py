@@ -1,6 +1,6 @@
 from fastapi import HTTPException
-from Controladores.base import Base
-from Modelo.Tabelas import Especie
+from controladores.base import Base
+from modelo.Tabelas import Especie
 
 class EspecieControlador(Base):
 

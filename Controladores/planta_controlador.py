@@ -1,6 +1,6 @@
 from fastapi import HTTPException
-from Controladores.base import Base 
-from Modelo.Tabelas import PlantaIndividual
+from controladores.base import Base 
+from modelo.Tabelas import PlantaIndividual
 from datetime import date
 
 class PlantaControlador(Base):
