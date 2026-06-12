@@ -141,7 +141,7 @@ def desenhar_formulario_especie(frame, acao, voltar, estilo_botao, cor_fundo):
                     messagebox.showinfo("Sucesso", "Espécie excluída do sistema!")
                     voltar()
                 else:
-                    messagebox.showerror("Erro", "Espécie não encontrada para excluir.")
+                    messagebox.showerror("Erro", "Não é possível excluir esta espécie, pois existem plantas vinculadas a ela.")
             except requests.exceptions.ConnectionError:
                 messagebox.showwarning("Modo Offline", "Ligue o Uvicorn para efetivar a exclusão no banco de dados.")
 
